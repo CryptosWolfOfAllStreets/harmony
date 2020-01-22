@@ -63,7 +63,11 @@ health_report () {
     # Number of bingos
     bingos=$(grep -c "BINGO" ./latest/validator*log)
     [ -z bingos ] && bingos=0
-
+   
+    # Beacon Chain Height
+    Beaconchainheight=eval(tac latest/zerolog*.log | grep -m 1 blockShard.:0 | grep -oE blockNumber.:[0-9]+)
+    [ -z Beaconchainheight ] && Beaconchainheight=Unknown
+    
     #echo "Your Node Version : "
     echo -e "\n====== HEALTH ======\n"
     LD_LIBRARY_PATH=$(pwd) ./harmony -version
@@ -73,6 +77,7 @@ health_report () {
     echo "Your Current Length of Chain:" $chainLength
     echo "Your Latest Block Synchronized:" $lastSynchBlock
     echo "Your Total Blocks Received After Syncing:" $bingos
+    echo "The Current Height of BeaconChain:" $Beaconchainheight
     ./wallet.sh balances
 }
 
